@@ -1,4 +1,4 @@
-/* Copyright (c) 2010 Daniel Doubrovkine, All Rights Reserved
+/* Copyright (c) 2016 the JNA project, All Rights Reserved
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,6 +15,7 @@ package com.sun.jna.platform.win32;
 import java.util.Arrays;
 import java.util.List;
 
+import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -25,8 +26,12 @@ import com.sun.jna.platform.win32.WinDef.LPARAM;
 import com.sun.jna.platform.win32.WinDef.RECT;
 import com.sun.jna.platform.win32.WinDef.UINT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.WinDef.HINSTANCE;
+import com.sun.jna.platform.win32.WinDef.HICON;
 import com.sun.jna.platform.win32.WinNT.PSID;
+import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIOptions;
 
 /**
  * Ported from ShellAPI.h.
@@ -34,6 +39,9 @@ import com.sun.jna.win32.StdCallLibrary;
  * @author dblock[at]dblock.org
  */
 public interface ShellAPI extends StdCallLibrary {
+
+    ShellAPI INSTANCE = (ShellAPI) Native.loadLibrary("Shell32", ShellAPI.class,
+						      W32APIOptions.DEFAULT_OPTIONS);
 
     int STRUCTURE_ALIGNMENT = Platform.is64Bit() ? Structure.ALIGN_DEFAULT : Structure.ALIGN_NONE;
 	
@@ -196,17 +204,87 @@ public interface ShellAPI extends StdCallLibrary {
         public LPARAM lParam;
 
         public APPBARDATA() {
-        	super();
-		}
+	    super();
+	}
 
         public APPBARDATA(Pointer p) {
-        	super(p);
+	    super(p);
         }
 
         @Override
         protected List getFieldOrder() {
-        	return Arrays.asList("cbSize", "hWnd", "uCallbackMessage", "uEdge",	"rc", "lParam");
+	    return Arrays.asList("cbSize", "hWnd", "uCallbackMessage", "uEdge",	"rc", "lParam");
         }
     }
+
+
+    public static class NOTIFYICONDATA extends Structure {
+
+        public static class ByReference extends NOTIFYICONDATA implements Structure.ByReference {
+        }
+
+	public DWORD cbSize;
+	public HWND hWnd;
+	public UINT uID;
+	public UINT uFlags;
+	public UINT uCallbackMessage;
+	public HICON hIcon;
+	public WString  szTip;
+	public DWORD dwState;
+	public DWORD dwStateMask;
+	public WString  szInfo;
+        public UINT  uVersion;  // used with NIM_SETVERSION, values 0, 3 and 4
+	public WString  szInfoTitle;
+	public DWORD dwInfoFlags;
+	public GUID guidItem;
+	public HICON hBalloonIcon;
+
+        public NOTIFYICONDATA() {
+	    super();
+	}
+
+        public NOTIFYICONDATA(Pointer p) {
+	    super(p);
+        }
+
+        @Override
+        protected List getFieldOrder() {
+	    return Arrays.asList("cbSize", "hWnd", "uID", "uFlags", "uCallbackMessage", "hIcon", "szTip",
+				 "dwState", "dwStateMask", "szInfo", "uVersion", "szInfoTitle", "dwInfoFlags",
+				 "guidItem", "hBalloonIcon" );
+        }
+    }
+
+    boolean Shell_NotifyIcon(DWORD dwMessage, NOTIFYICONDATA lpData);
+
+    public final int NIM_ADD         = 0x00000000;
+    public final int NIM_MODIFY      = 0x00000001;
+    public final int NIM_DELETE      = 0x00000002;
+    public final int NIM_SETFOCUS    = 0x00000003;
+    public final int NIM_SETVERSION  = 0x00000004;
+    public final int NOTIFYICON_VERSION      = 3;
+    public final int NOTIFYICON_VERSION_4    = 4;
+
+    public final int NIF_MESSAGE     = 0x00000001;
+    public final int NIF_ICON        = 0x00000002;
+    public final int NIF_TIP         = 0x00000004;
+    public final int NIF_STATE       = 0x00000008;
+    public final int NIF_INFO        = 0x00000010;
+    public final int NIF_GUID        = 0x00000020;
+    public final int NIF_REALTIME    = 0x00000040;
+    public final int NIF_SHOWTIP     = 0x00000080;
+
+    public final int NIS_HIDDEN      = 0x00000001;
+    public final int NIS_SHAREDICON  = 0x00000002;
+
+    public final int NIIF_NONE       = 0x00000000;
+    public final int NIIF_INFO       = 0x00000001;
+    public final int NIIF_WARNING    = 0x00000002;
+    public final int NIIF_ERROR      = 0x00000003;
+    public final int NIIF_USER       = 0x00000004;
+    public final int NIIF_NOSOUND    = 0x00000010;
+    public final int NIIF_LARGE_ICON = 0x00000020;
+
+    HICON ExtractIcon(HINSTANCE hInst, String lpszExeFileName, UINT nIconIndex);
 
 }

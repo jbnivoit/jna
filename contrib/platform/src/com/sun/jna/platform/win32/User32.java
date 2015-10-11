@@ -22,6 +22,9 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
+import java.util.List;
+import java.util.Arrays;
+
 /**
  * Provides access to the w32 user32 library. Incomplete implementation to
  * support demos.
@@ -2011,4 +2014,286 @@ public interface User32 extends StdCallLibrary, WinUser, WinNT {
 	 * @see <A HREF="https://msdn.microsoft.com/en-us/library/windows/desktop/ms645598(v=vs.85).aspx">GetRawInputDeviceList</A>
 	 */
 	int GetRawInputDeviceList(RAWINPUTDEVICELIST[] pRawInputDeviceList, IntByReference puiNumDevices, int cbSize);
+
+
+    public static class MENUITEMINFO extends Structure {
+        public static class ByReference extends MENUITEMINFO implements Structure.ByReference {
+        }
+
+	public UINT     cbSize;
+	public UINT     fMask;
+	public UINT     fType;         // used if MIIM_TYPE (4.0) or MIIM_FTYPE (>4.0)
+	public UINT     fState;        // used if MIIM_STATE
+	public UINT     wID;           // used if MIIM_ID
+	public HMENU    hSubMenu;      // used if MIIM_SUBMENU
+	public HBITMAP  hbmpChecked;   // used if MIIM_CHECKMARKS
+	public HBITMAP  hbmpUnchecked; // used if MIIM_CHECKMARKS
+	public ULONG_PTR dwItemData;   // used if MIIM_DATA
+	public WString   dwTypeData;    // used if MIIM_TYPE (4.0) or MIIM_STRING (>4.0)
+	public UINT     cch;           // used if MIIM_TYPE (4.0) or MIIM_STRING (>4.0)
+	public HBITMAP  hbmpItem;      // used if MIIM_BITMAP
+
+        public MENUITEMINFO() {
+        	super();
+		}
+
+        public MENUITEMINFO(Pointer p) {
+        	super(p);
+        }
+
+        @Override
+        protected List getFieldOrder() {
+	    return Arrays.asList("cbSize", "fMask", "fType", "fState", "wID", "hSubMenu", "hbmpChecked",
+				 "hbmpUnchecked", "dwItemData", "dwTypeData", "cch", 
+				 "hbmpItem" );
+        }
+    }
+
+
+    public final UINT MIIM_STATE       = new UINT(0x00000001);
+    public final UINT MIIM_ID          = new UINT(0x00000002);
+    public final UINT MIIM_SUBMENU     = new UINT(0x00000004);
+    public final UINT MIIM_CHECKMARKS  = new UINT(0x00000008);
+    public final UINT MIIM_TYPE        = new UINT(0x00000010);
+    public final UINT MIIM_DATA        = new UINT(0x00000020);
+    public final UINT MIIM_STRING      = new UINT(0x00000040);
+    public final UINT MIIM_BITMAP      = new UINT(0x00000080);
+    public final UINT MIIM_FTYPE       = new UINT(0x00000100);
+
+    public final UINT MF_INSERT           = new UINT(0x00000000L);
+    public final UINT MF_CHANGE           = new UINT(0x00000080L);
+    public final UINT MF_APPEND           = new UINT(0x00000100L);
+    public final UINT MF_DELETE           = new UINT(0x00000200L);
+    public final UINT MF_REMOVE           = new UINT(0x00001000L);
+
+    public final UINT MF_BYCOMMAND        = new UINT(0x00000000L);
+    public final UINT MF_BYPOSITION       = new UINT(0x00000400L);
+
+    public final UINT MF_SEPARATOR        = new UINT(0x00000800L);
+
+    public final UINT MF_ENABLED          = new UINT(0x00000000L);
+    public final UINT MF_GRAYED           = new UINT(0x00000001L);
+    public final UINT MF_DISABLED         = new UINT(0x00000002L);
+
+    public final UINT MF_UNCHECKED        = new UINT(0x00000000L);
+    public final UINT MF_CHECKED          = new UINT(0x00000008L);
+    public final UINT MF_USECHECKBITMAPS  = new UINT(0x00000200L);
+
+    public final UINT MF_STRING           = new UINT(0x00000000L);
+    public final UINT MF_BITMAP           = new UINT(0x00000004L);
+    public final UINT MF_OWNERDRAW        = new UINT(0x00000100L);
+
+    public final UINT MF_POPUP            = new UINT(0x00000010L);
+    public final UINT MF_MENUBARBREAK     = new UINT(0x00000020L);
+    public final UINT MF_MENUBREAK        = new UINT(0x00000040L);
+
+    public final UINT MF_UNHILITE         = new UINT(0x00000000L);
+    public final UINT MF_HILITE           = new UINT(0x00000080L);
+
+    public final UINT MF_DEFAULT          = new UINT(0x00001000L);
+    public final UINT MF_SYSMENU          = new UINT(0x00002000L);
+    public final UINT MF_HELP             = new UINT(0x00004000L);
+    public final UINT MF_RIGHTJUSTIFY     = new UINT(0x00004000L);
+
+    public final UINT MF_MOUSESELECT      = new UINT(0x00008000L);
+    public final UINT MF_END              = new UINT(0x00000080L)  /* Obsolete -- only used by old RES files */;
+
+    public final UINT MFT_STRING          = MF_STRING;
+    public final UINT MFT_BITMAP          = MF_BITMAP;
+    public final UINT MFT_MENUBARBREAK    = MF_MENUBARBREAK;
+    public final UINT MFT_MENUBREAK       = MF_MENUBREAK;
+    public final UINT MFT_OWNERDRAW       = MF_OWNERDRAW;
+    public final UINT MFT_RADIOCHECK      = new UINT(0x00000200L);
+    public final UINT MFT_SEPARATOR       = MF_SEPARATOR;
+    public final UINT MFT_RIGHTORDER      = new UINT(0x00002000L);
+    public final UINT MFT_RIGHTJUSTIFY    = MF_RIGHTJUSTIFY;
+    public final UINT MFS_GRAYED          = new UINT(0x00000003L);
+    public final UINT MFS_DISABLED        = MFS_GRAYED;
+    public final UINT MFS_CHECKED         = MF_CHECKED;
+    public final UINT MFS_HILITE          = MF_HILITE;
+    public final UINT MFS_ENABLED         = MF_ENABLED;
+    public final UINT MFS_UNCHECKED       = MF_UNCHECKED;
+    public final UINT MFS_UNHILITE        = MF_UNHILITE;
+    public final UINT MFS_DEFAULT         = MF_DEFAULT;
+
+    boolean InsertMenu(HMENU hMenu,
+		       UINT uPosition,
+		       UINT uFlags,
+		       UINT_PTR uIDNewItem,
+		       WString lpNewItem);
+
+    boolean ModifyMenu(HMENU hMnu,
+		       UINT uPosition,
+		       UINT uFlags,
+		       UINT_PTR uIDNewItem,
+		       WString lpNewItem);
+
+    boolean RemoveMenu(HMENU hMenu,
+		       UINT uPosition,
+		       UINT uFlags);
+
+    boolean DeleteMenu(HMENU hMenu,
+		       UINT uPosition,
+		       UINT uFlags);
+
+    boolean TrackPopupMenu(HMENU hMenu,
+			   UINT uFlags,
+			   int x,
+			   int y,
+			   int nReserved,
+			   HWND hWnd,
+			   RECT prcRect);
+
+    boolean InsertMenuItem(HMENU hmenu,
+			   UINT item,
+			   boolean fByPosition,
+			   MENUITEMINFO lpmi);
+
+    boolean SetMenuItemInfo(HMENU hmenu,
+			    UINT item,
+			    boolean fByPositon,
+			    MENUITEMINFO lpmii);
+
+
+    HMENU GetSystemMenu(HWND hWnd,
+			BOOL bRevert);
+
+
+    HMENU CreateMenu();
+
+    HMENU CreatePopupMenu();
+
+    boolean DestroyMenu(HMENU hMenu);
+
+    DWORD CheckMenuItem(HMENU hMenu,
+			UINT uIDCheckItem,
+			UINT uCheck);
+
+    boolean EnableMenuItem(HMENU hMenu,
+			   UINT uIDEnableItem,
+			   UINT uEnable);
+
+    HMENU GetSubMenu(HMENU hMenu,
+		     int nPos);
+
+    UINT GetMenuItemID(HMENU hMenu,
+		       int nPos);
+
+    int	GetMenuItemCount(HMENU hMenu);
+
+    UINT GetMenuState(HMENU hMenu,
+		      UINT uId,
+		      UINT uFlags);
+
+    public static final UINT sizeof_MENUITEMINFO = new UINT(80);
+
+    public final int TPM_LEFTBUTTON  = 0x0000;
+    public final int TPM_RIGHTBUTTON = 0x0002;
+    public final int TPM_LEFTALIGN   = 0x0000;
+    public final int TPM_CENTERALIGN = 0x0004;
+    public final int TPM_RIGHTALIGN  = 0x0008;
+    public final int TPM_TOPALIGN        = 0x0000;
+    public final int TPM_VCENTERALIGN    = 0x0010;
+    public final int TPM_BOTTOMALIGN     = 0x0020;
+
+    public final int TPM_HORIZONTAL      = 0x0000;     /* Horz alignment matters more */
+    public final int TPM_VERTICAL        = 0x0040;     /* Vert alignment matters more */
+    public final int TPM_NONOTIFY        = 0x0080;     /* Don't send any notification msgs */
+    public final int TPM_RETURNCMD       = 0x0100;
+    public final int TPM_RECURSE         = 0x0001;
+    public final int TPM_HORPOSANIMATION = 0x0400;
+    public final int TPM_HORNEGANIMATION = 0x0800;
+    public final int TPM_VERPOSANIMATION = 0x1000;
+    public final int TPM_VERNEGANIMATION = 0x2000;
+    public final int TPM_NOANIMATION     = 0x4000;
+    public final int TPM_LAYOUTRTL       = 0x8000;
+
+
+    public final UINT MB_OK                       = new UINT(0x00000000L);
+    public final UINT MB_OKCANCEL                 = new UINT(0x00000001L);
+    public final UINT MB_ABORTRETRYIGNORE         = new UINT(0x00000002L);
+    public final UINT MB_YESNOCANCEL              = new UINT(0x00000003L);
+    public final UINT MB_YESNO                    = new UINT(0x00000004L);
+    public final UINT MB_RETRYCANCEL              = new UINT(0x00000005L);
+    public final UINT MB_CANCELTRYCONTINUE        = new UINT(0x00000006L);
+    public final UINT MB_ICONHAND                 = new UINT(0x00000010L);
+    public final UINT MB_ICONQUESTION             = new UINT(0x00000020L);
+    public final UINT MB_ICONEXCLAMATION          = new UINT(0x00000030L);
+    public final UINT MB_ICONASTERISK             = new UINT(0x00000040L);
+    public final UINT MB_USERICON                 = new UINT(0x00000080L);
+    public final UINT MB_ICONWARNING              = MB_ICONEXCLAMATION;
+    public final UINT MB_ICONERROR                = MB_ICONHAND;
+    public final UINT MB_ICONINFORMATION          = MB_ICONASTERISK;
+    public final UINT MB_ICONSTOP                 = MB_ICONHAND;
+    public final UINT MB_DEFBUTTON1               = new UINT(0x00000000L);
+    public final UINT MB_DEFBUTTON2               = new UINT(0x00000100L);
+    public final UINT MB_DEFBUTTON3               = new UINT(0x00000200L);
+    public final UINT MB_DEFBUTTON4               = new UINT(0x00000300L);
+    public final UINT MB_APPLMODAL                = new UINT(0x00000000L);
+    public final UINT MB_SYSTEMMODAL              = new UINT(0x00001000L);
+    public final UINT MB_TASKMODAL                = new UINT(0x00002000L);
+    public final UINT MB_HELP                     = new UINT(0x00004000L);
+    public final UINT MB_NOFOCUS                  = new UINT(0x00008000L);
+    public final UINT MB_SETFOREGROUND            = new UINT(0x00010000L);
+    public final UINT MB_DEFAULT_DESKTOP_ONLY     = new UINT(0x00020000L);
+    public final UINT MB_TOPMOST                  = new UINT(0x00040000L);
+    public final UINT MB_RIGHT                    = new UINT(0x00080000L);
+    public final UINT MB_RTLREADING               = new UINT(0x00100000L);
+    public final UINT MB_SERVICE_NOTIFICATION          = new UINT(0x00200000L);
+    public final UINT MB_SERVICE_NOTIFICATION_NT3X     = new UINT(0x00040000L);
+    public final UINT MB_TYPEMASK                 = new UINT(0x0000000FL);
+    public final UINT MB_ICONMASK                 = new UINT(0x000000F0L);
+    public final UINT MB_DEFMASK                  = new UINT(0x00000F00L);
+    public final UINT MB_MODEMASK                 = new UINT(0x00003000L);
+    public final UINT MB_MISCMASK                 = new UINT(0x0000C000L);
+
+    HWND GetDesktopWindow();
+
+    public static final HWND HWND_DESKTOP = null;
+
+    int	MessageBox(HWND hWnd,
+		   String lpText,
+		   String lpCaption,
+		   UINT uType);
+
+    public final int WM_COMMAND                      = 0x0111;
+    public final int WM_MOUSEFIRST                   = 0x0200;
+    public final int WM_MOUSEMOVE                    = 0x0200;
+    public final int WM_LBUTTONDOWN                  = 0x0201;
+    public final int WM_LBUTTONUP                    = 0x0202;
+    public final int WM_LBUTTONDBLCLK                = 0x0203;
+    public final int WM_RBUTTONDOWN                  = 0x0204;
+    public final int WM_RBUTTONUP                    = 0x0205;
+    public final int WM_RBUTTONDBLCLK                = 0x0206;
+    public final int WM_MBUTTONDOWN                  = 0x0207;
+    public final int WM_MBUTTONUP                    = 0x0208;
+    public final int WM_MBUTTONDBLCLK                = 0x0209;
+    public final int WM_MOUSEWHEEL                   = 0x020A;
+    public final int WM_XBUTTONDOWN                  = 0x020B;
+    public final int WM_XBUTTONUP                    = 0x020C;
+    public final int WM_XBUTTONDBLCLK                = 0x020D;
+    public final int WM_MOUSEHWHEEL                  = 0x020E;
+    public final int WM_USER                         = 0x0400;
+
+
+    boolean GetCursorPos(POINT lpPoint);
+
+
+    HICON CreateIconFromResourceEx(byte [] pbIconBits,
+				   DWORD cbIconBits,
+				   boolean  fIcon,
+				   DWORD dwVersion,
+				   int   cxDesired,
+				   int   cyDesired,
+				   UINT  uFlags);
+
+    int LookupIconIdFromDirectoryEx(byte[] presbits,
+				    boolean  fIcon,
+				    int   cxDesired,
+				    int   cyDesired,
+				    UINT  Flags);
+
+    public final UINT LR_DEFAULTCOLOR = new UINT(0x00000000);
+
 }
+

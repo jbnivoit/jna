@@ -22,6 +22,7 @@ import com.sun.jna.platform.win32.WinDef.HPALETTE;
 import com.sun.jna.platform.win32.WinDef.HPEN;
 import com.sun.jna.platform.win32.WinDef.HRGN;
 import com.sun.jna.platform.win32.WinDef.WORD;
+import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinGDI.BITMAP;
 import com.sun.jna.platform.win32.WinGDI.BITMAPINFO;
 import com.sun.jna.platform.win32.WinGDI.BITMAPINFOHEADER;
@@ -41,6 +42,37 @@ public interface GDI32 extends StdCallLibrary {
 
     GDI32 INSTANCE = (GDI32) Native.loadLibrary("gdi32", GDI32.class,
                                                 W32APIOptions.DEFAULT_OPTIONS);
+
+
+    
+    // from http://www.pinvoke.net/default.aspx/gdi32/BitBlt.html
+    public enum TernaryRasterOperations {
+    SRCCOPY     (0x00CC0020),
+    SRCPAINT    (0x00EE0086),
+    SRCAND      (0x008800C6),
+    SRCINVERT   (0x00660046),
+    SRCERASE    (0x00440328),
+    NOTSRCCOPY  (0x00330008),
+    NOTSRCERASE (0x001100A6),
+    MERGECOPY   (0x00C000CA),
+    MERGEPAINT  (0x00BB0226),
+    PATCOPY     (0x00F00021),
+    PATPAINT    (0x00FB0A09),
+    PATINVERT   (0x005A0049),
+    DSTINVERT   (0x00550009),
+    BLACKNESS   (0x00000042),
+    WHITENESS   (0x00FF0062),
+    CAPTUREBLT  (0x40000000); //only if WinVer >=5.0.0 (see wingdi.h)
+    
+    public final DWORD val;
+    
+     TernaryRasterOperations(int val) {
+         this.val = new DWORD(val);
+     }
+    };
+    
+    public boolean BitBlt(HDC hObject, int nXDest, int nYDest, int nWidth,
+                int nHeight, HDC hObjSource, int nXSrc, int nYSrc,  DWORD dwRop);    
 
     /**
      * The ExtCreateRegion function creates a region from the specified region and transformation data.

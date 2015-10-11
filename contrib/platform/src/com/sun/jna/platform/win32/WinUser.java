@@ -1053,6 +1053,54 @@ public interface WinUser extends StdCallLibrary, WinDef {
         }
     }
 
+    public class WNDCLASS extends Structure {
+
+        /**
+         * The Class ByReference.
+         */
+        public static class ByReference extends WNDCLASS implements
+                                                               Structure.ByReference {
+        }
+
+        /**
+         * Instantiates a new wndclassex.
+         */
+        public WNDCLASS() {
+        }
+
+        /**
+         * Instantiates a new wndclassex.
+         *
+         * @param memory
+         *            the memory
+         */
+        public WNDCLASS(Pointer memory) {
+            super(memory);
+            read();
+        }
+
+	public UINT        style;
+	public Callback    lpfnWndProc;
+	public int         cbClsExtra;
+	public int         cbWndExtra;
+	public HINSTANCE   hInstance;
+	public HICON       hIcon;
+	public HCURSOR     hCursor;
+	public HBRUSH      hbrBackground;
+	public WString     lpszMenuName;
+	public WString     lpszClassName;
+
+        @Override
+        protected List<String> getFieldOrder() {
+            return Arrays.asList(new String[] { "style",
+                                                "lpfnWndProc", "cbClsExtra", "cbWndExtra", "hInstance",
+                                                "hIcon", "hCursor", "hbrBackground", "lpszMenuName",
+                                                "lpszClassName" });
+        }
+    }
+
+    ATOM RegisterClass(WNDCLASS lpWndClass);
+
     /**
      * An application-defined function that processes messages sent to a window.
      * The WNDPROC type defines a pointer to this callback function.
@@ -1559,4 +1607,9 @@ public interface WinUser extends StdCallLibrary, WinDef {
             return "hDevice=" + hDevice + ", dwType=" + dwType;
         }
     }
+
+
+    int CS_VREDRAW = 0x0001;
+    int CS_HREDRAW = 0x0002;
+
 }

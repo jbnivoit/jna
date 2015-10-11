@@ -15,7 +15,9 @@ import java.util.List;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.WinDef.HINSTANCE;
 import com.sun.jna.platform.win32.WinDef.HMENU;
+import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.platform.win32.WinDef.HICON;
 import com.sun.jna.platform.win32.WinDef.LPVOID;
 import com.sun.jna.platform.win32.WinUser.RAWINPUTDEVICELIST;
 import com.sun.jna.ptr.IntByReference;
@@ -76,5 +78,18 @@ public final class User32Util {
         }
 
         return Arrays.asList(records);
+    }
+
+    // from http://www.ragestorm.net/blogs/?p=9
+    public static HICON createIcon(byte[] iconData, int iconSize)     
+    {     
+	HICON hIcon = null;     
+	int offset = User32.INSTANCE.LookupIconIdFromDirectoryEx(iconData, true, iconSize, iconSize, User32.LR_DEFAULTCOLOR);     
+	if (offset != 0) {
+	    byte [] d = new byte[iconData.length-offset];
+	    System.arraycopy(iconData,offset,d,0,iconData.length-offset);
+            hIcon = User32.INSTANCE.CreateIconFromResourceEx(d, new DWORD(0), true, new DWORD(0x30000), iconSize, iconSize, User32.LR_DEFAULTCOLOR);
+	}     
+	return hIcon;     
     }
 }
